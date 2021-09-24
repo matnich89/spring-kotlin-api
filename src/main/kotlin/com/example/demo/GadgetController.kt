@@ -55,7 +55,7 @@ class GadgetController(private val repo: GadgetRepo) {
         }.orElse(ResponseEntity<Gadget>(HttpStatus.INTERNAL_SERVER_ERROR))
     }
 
-    @DeleteMapping
+    @DeleteMapping("/gadgets/{id}")
     fun removeGadgetById(@PathVariable("id") gadgetId: Long): ResponseEntity<Void> {
          val gadget = repo.findById(gadgetId)
         if (gadget.isPresent) {
