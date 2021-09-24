@@ -13,3 +13,5 @@ data class Gadget (
     val gadgetAvailability : Boolean = true,
     val gadgetPrice : Double,
 )
+
+fun Gadget.toDto() = GadgetDto(gadgetId, gadgetName, gadgetCategory, gadgetAvailability, gadgetPrice)

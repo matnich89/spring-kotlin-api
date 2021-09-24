@@ -12,12 +12,14 @@ import org.springframework.web.util.UriComponentsBuilder
 class GadgetController(private val repo: GadgetRepo) {
 
     @GetMapping("/gadgets")
-    fun fetchGadgets(): ResponseEntity<List<Gadget>> {
+    fun fetchGadgets(): ResponseEntity<List<GadgetDto>> {
         val gadgets = repo.findAll()
         if (gadgets.isEmpty()) {
-            return ResponseEntity<List<Gadget>>(HttpStatus.NO_CONTENT)
+            return ResponseEntity<List<GadgetDto>>(HttpStatus.NO_CONTENT)
         }
-        return ResponseEntity<List<Gadget>>(gadgets, HttpStatus.OK)
+        val dtos = mutableListOf<GadgetDto>()
+        gadgets.mapTo(dtos) { it.toDto() }
+        return ResponseEntity<List<GadgetDto>>(dtos, HttpStatus.OK)
     }
 
     @GetMapping("/gadgets/{id}")
@@ -30,8 +32,8 @@ class GadgetController(private val repo: GadgetRepo) {
     }
 
     @PostMapping("/gadgets")
-    fun addNewGadget(@RequestBody gadget: Gadget, uri: UriComponentsBuilder): ResponseEntity<Gadget> {
-        val persistedGadget = repo.save(gadget)
+    fun addNewGadget(@RequestBody gadget: GadgetDto, uri: UriComponentsBuilder): ResponseEntity<Gadget> {
+        val persistedGadget = repo.save(gadget.toEntity())
         if (ObjectUtils.isEmpty(persistedGadget)) {
             return ResponseEntity<Gadget>(HttpStatus.BAD_REQUEST)
         }
